@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<header class="masthead  text-white ">
+    <div class="masthead-content">
+
+
+        <div class="card bg-light mb-3 text-dark" >
+          <div class="card-header text-center" >Ticket</div>
+          <div class="card-body">
+            <h5 class="card-title">{{booking.title}}</h5>
+            <p class="card-text">
+              Dear {{request.user.username}} ,<br>
+
+                Welcome to {{booking.title}}. We can't wait to see you in {{booking.location}} In {{booking.date}}.<br>
+
+                I'm apart of our attendee support team, and I'll be sending you some useful information about {{booking.title}} in the one hour. In the meantime you can find more using the following links.<br>
+
+                    1. You can stay with the {{booking.name}} network by booking one of our hotels.<br>
+                    2. Learn more about the Location<br>
+                    3. Tell your friends you're attending.<br>
+                    4. Follow us on Facebook and Twitter.<br>
+                    5. Your ticket reference is A1PP-1.<br>
+
+                If you have any questions, you can send us an email and we will answer your question.<br>
+
+                Best<br>
+                The organizer team Of {{booking.title}} :<span style="text-transform:uppercase;"> {{booking.owner}}</span><br>
+            </p>
+          </div>
+        </div>
+      </div>
+      <a class="btn btn-primary mx-1" href="{% url 'dashboard' %}" role="button">Dashboard</a>
+
+</header>
+
+{% endblock %}

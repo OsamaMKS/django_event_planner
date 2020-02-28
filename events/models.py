@@ -14,3 +14,8 @@ class Event(models.Model):
 
 	def __str__(self):
 		return (self.title)
+
+class Booking(models.Model):
+	event = models.ForeignKey(Event, on_delete=models.CASCADE)
+	owner = models.ForeignKey(User, on_delete = models.CASCADE, related_name="my_booking")
+	ticket = models.PositiveIntegerField()

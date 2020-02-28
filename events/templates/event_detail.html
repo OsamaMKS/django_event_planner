@@ -17,9 +17,15 @@
 
           <p>{{ event.location }}</p>
           <p>{{ event.date }} {{ event.time }}</p>
-          <p>{{ event.created_on }}</p>
+          <p> Available seats :{{event.seats}}</p>
           {% if request.user == event.owner %}
           <a class="btn btn-primary mx-1" href="{% url 'edit-event' event.id %}" role="button">Edit</a>
+          {%elif request.user.is_authenticated%}
+            {% if event.seats > 0 %}
+              <a class="btn btn-primary mx-1" href="{% url 'event-book' event.id %}" role="button">Book</a>
+            {%else%}
+            <a class="btn btn-primary mx-1" href="#" role="button">Full</a>
+            {%endif%}
           {% endif %}
 
       </div>
