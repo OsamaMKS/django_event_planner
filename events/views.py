@@ -19,8 +19,10 @@ def home(request):
 
 def dashboard(request):
 	my_events = request.user.my_events.all()
+	my_bookings = request.user.my_booking.filter(event__date__lt = datetime.today())
 	context = {
 	'my_events': my_events,
+	'my_bookings': my_bookings,
 	}
 	return render(request, 'dashboard.html', context)
 
@@ -62,19 +64,29 @@ def edit_event(request, event_id):
 		}
 		return render(request,'edit_event.html', context)
 
-def event_book(request, event_id):
-	event = Event.objects.get(id=event_id)
-	if request.user.is_anonymous:
-		return redirent('login')
+def event_book(request,event_id):
+    if request.user.is_anonymous:
+        return redirect('login')
+    event= Event.objects.get(id=event_id)
+    form = BookingForm()
+    if request.method == "POST":
+        form = BookingForm(request.POST)
+    if form.is_valid():
+        booking = form.save(commit=False)
+        booking.event= event
+        booking.owner = request.user
+        seats = event.get_seats_left()
+        if booking.ticket <= seats:
+            booking.save()
+            return redirect("event-details", event_id)
+        else:
+            messages.warning(request, "Not enough seats!")
+    context = {
+    "form":form,
+    "event":event,
+    }
+    return render(request, 'book_event.html', context)
 
-	form = BookingForm()
-
-
-	context={
-		"form":form,
-		"booking":event,
-	}
-	return render(request,'book_event.html',context)
 
 def ticket(request,event_id):
 	event = Event.objects.get(id=event_id)
@@ -82,7 +94,7 @@ def ticket(request,event_id):
 		return redirent('login')
 
 	context={
-		"booking":event,
+		"booking": event,
 	}
 	return render(request,'ticket_event.html',context)
 

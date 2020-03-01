@@ -11,6 +11,17 @@
           <div class="card-body">
             <h5 class="card-title">{{booking.title}}</h5>
             <p class="card-text">
+              ----------------------------------------------------------<br>
+              Event Ticket Info : <br>
+              Name : {{request.user.first_name}} {{request.user.last_name}} <br>
+              Event : {{ booking.title }}<br>
+              Date : {{booking.date}}<br>
+              Time : {{booking.time}}<br>
+              Location : {{booking.location}}<br>
+              Number of tickets : {{tickets}}<br>
+              ----------------------------------------------------------<br>
+            </p>
+            <p class="card-text">
               Dear {{request.user.username}} ,<br>
 
                 Welcome to {{booking.title}}. We can't wait to see you in {{booking.location}} In {{booking.date}}.<br>

@@ -7,10 +7,10 @@
     <div class="container">
         <div class="jumbotron">
           <h2 class="masthead-subheading mb-0">Book for Event</h2>
-          <form action="{% url 'ticket-event' booking.id %}" method="POST" enctype="multipart/form-data" name="ticket_num">
+          <form action="{% url 'event-book' event.id %}" method="POST" enctype="multipart/form-data" >
             {% csrf_token %}
             {{form|crispy}}
-            <input class = "btn btn-primary btn-xl rounded-pill mt-5" type="submit" value="Book">
+            <input class = "btn btn-primary btn-xl rounded-pill mt-5" type="submit" value="Book" name="ticket_num">
           </form>
       </div>
     </div>

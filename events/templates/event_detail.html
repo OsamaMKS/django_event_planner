@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+
 <header class="masthead text-center text-white">
   <div class="masthead-content">
     <div class="container">
@@ -17,15 +18,17 @@
 
           <p>{{ event.location }}</p>
           <p>{{ event.date }} {{ event.time }}</p>
-          <p> Available seats :{{event.seats}}</p>
+          <p> Available seats :{{event.get_seats_left}}</p>
+          {% if request.user.is_authenticated%}
+            {% if event.get_seats_left > 0 %}
+              <a class="btn btn-primary mx-1" href="{% url 'event-book' event.id %}" role="button">Book</a>
+            {% else %}
+            <a class="btn btn-primary mx-1" href="#" role="button">Full</a>
+            {% endif %}
+            {% endif %}
+
           {% if request.user == event.owner %}
           <a class="btn btn-primary mx-1" href="{% url 'edit-event' event.id %}" role="button">Edit</a>
-          {%elif request.user.is_authenticated%}
-            {% if event.seats > 0 %}
-              <a class="btn btn-primary mx-1" href="{% url 'event-book' event.id %}" role="button">Book</a>
-            {%else%}
-            <a class="btn btn-primary mx-1" href="#" role="button">Full</a>
-            {%endif%}
           {% endif %}
 
       </div>
