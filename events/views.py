@@ -17,6 +17,7 @@ def home(request):
 	}
 	return render(request, 'home.html',context)
 
+
 def dashboard(request):
 	my_events = request.user.my_events.all()
 	my_bookings = request.user.my_booking.filter(event__date__lt = datetime.today())
@@ -51,11 +52,11 @@ def edit_event(request, event_id):
 		event_obj = Event.objects.get(id = event_id)
 		if request.user != event_obj.owner:
 			return redirect('home')
-		form= EventForm(instance = event_obj)
-		if request.method == 'POST':
-			form = EventForm(request.POST, request.FILES, instance=event_obj)
-			if form.is_valid():
-				form.save()
+			form= EventForm(instance = event_obj)
+			if request.method == 'POST':
+				form = EventForm(request.POST, request.FILES, instance=event_obj)
+				if form.is_valid():
+					form.save()
 			return redirect('home')
 
 		context = {
@@ -68,6 +69,7 @@ def event_book(request,event_id):
     if request.user.is_anonymous:
         return redirect('login')
     event= Event.objects.get(id=event_id)
+
     form = BookingForm()
     if request.method == "POST":
         form = BookingForm(request.POST)
@@ -78,7 +80,7 @@ def event_book(request,event_id):
         seats = event.get_seats_left()
         if booking.ticket <= seats:
             booking.save()
-            return redirect("event-details", event_id)
+            return redirect("ticket-event", event_id)
         else:
             messages.warning(request, "Not enough seats!")
     context = {
@@ -90,11 +92,15 @@ def event_book(request,event_id):
 
 def ticket(request,event_id):
 	event = Event.objects.get(id=event_id)
+
+	book = Booking.objects.get(id=event_id)
+
 	if request.user.is_anonymous:
 		return redirent('login')
 
 	context={
 		"booking": event,
+		"booker": book,
 	}
 	return render(request,'ticket_event.html',context)
 
