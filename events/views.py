@@ -17,7 +17,6 @@ def home(request):
 	}
 	return render(request, 'home.html',context)
 
-
 def dashboard(request):
 	my_events = request.user.my_events.all()
 	my_bookings = request.user.my_booking.filter(event__date__lt = datetime.today())
@@ -43,8 +42,13 @@ def create(request):
 
 def event_detail(request,event_id):
 		event = Event.objects.get(id = event_id)
+		booking = Booking.objects.all()
+		time = datetime.now()
+
 		context={
-		 "event":event
+		 "event":event,
+		 "booker":booking,
+		 "time":time
 		}
 		return render(request,'event_detail.html', context)
 
@@ -71,6 +75,7 @@ def event_book(request,event_id):
     event= Event.objects.get(id=event_id)
 
     form = BookingForm()
+
     if request.method == "POST":
         form = BookingForm(request.POST)
     if form.is_valid():
@@ -88,7 +93,6 @@ def event_book(request,event_id):
     "event":event,
     }
     return render(request, 'book_event.html', context)
-
 
 def ticket(request,event_id):
 	event = Event.objects.get(id=event_id)
