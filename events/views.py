@@ -1,11 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
-from .forms import UserSignup, UserLogin, EventForm, BookingForm
+from .forms import UserSignup, UserLogin, EventForm, BookingForm , ProfileForm
 from django.contrib import messages
-from .models import Event, Booking
+from .models import Event, Booking , Profile
 from datetime import datetime
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+
+from django.core import mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 def home(request):
 	events = Event.objects.filter(date__gte=datetime.now())
@@ -25,6 +31,39 @@ def dashboard(request):
 	'my_bookings': my_bookings,
 	}
 	return render(request, 'dashboard.html', context)
+
+
+def profile(request, user_id):
+	user = User.objects.get(id=user_id)
+	events = user.my_events.all()
+	my_events = request.user.my_events.filter(date__gte=datetime.now())
+	context={
+		'user': user,
+		'events': events,
+		'my_events':my_events,
+	}
+	return render(request, 'profile.html', context)
+
+
+def edit_profile(request, user_id):
+	profile = Profile.objects.get(user_id = user_id)
+	if request.user != profile.user:
+		return redirect('home')
+	form= ProfileForm(instance = profile)
+	user_form = UserForm(instance=request.user)
+	if request.method == 'POST':
+		form = ProfileForm(request.POST, request.FILES, instance=profile)
+		user_form = UserForm(request.POST, instance=request.user)
+		if form.is_valid() and user_form.is_valid():
+			form.save()
+			user_form.save()
+			return redirect('profile', user_id)
+	context = {
+		'form': form,
+		'profile': profile,
+		'user_form':user_form
+	}
+	return render(request, 'edit_profile.html', context)
 
 def create(request):
 	form = EventForm()
@@ -70,29 +109,51 @@ def edit_event(request, event_id):
 		return render(request,'edit_event.html', context)
 
 def event_book(request,event_id):
-    if request.user.is_anonymous:
-        return redirect('login')
-    event= Event.objects.get(id=event_id)
+	if request.user.is_anonymous:
+		return redirect('login')
+	event = Event.objects.get(id=event_id)
+	booking = Booking.objects.filter(owner=request.user)
+	form = BookingForm()
 
-    form = BookingForm()
+	if request.method == "POST":
+		form = BookingForm(request.POST)
+	if form.is_valid():
+		booking = form.save(commit=False)
+		booking.event= event
+		booking.owner = request.user
+		seats = event.get_seats_left()
+		if booking.ticket <= seats:
+			booking.save()
+#####################################################
+			#Without Html page
+			# send_mail(
+			# 'Booking Details:',
+			# ('''Event:{},
+			# 'Date:{},
+			# 'Time:{},
+			# 'Number of tickets:{}'''.format(booking.event.title, booking.event.date,booking.event.time,booking.ticket)),
+			# 'anna.osama1234@gmail.com',
+			# [booking.owner.email],
+			# fail_silently=False,
+			# )
+#####################################################
 
-    if request.method == "POST":
-        form = BookingForm(request.POST)
-    if form.is_valid():
-        booking = form.save(commit=False)
-        booking.event= event
-        booking.owner = request.user
-        seats = event.get_seats_left()
-        if booking.ticket <= seats:
-            booking.save()
-            return redirect("ticket-event", event_id)
-        else:
-            messages.warning(request, "Not enough seats!")
-    context = {
-    "form":form,
-    "event":event,
-    }
-    return render(request, 'book_event.html', context)
+			subject = 'Event Ticket'
+			html_message = render_to_string('ticket_event.html',{'event': event,'booking':booking})
+			plain_message = strip_tags(html_message)
+			from_email = 'anna.osama1234@gmail.com'
+			to = 'osamamksider@hotmail.com'
+
+			mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+
+			return redirect("event-details", event_id)
+		else:
+			messages.warning(request, "Not enough seats!")
+	context = {
+	"form":form,
+	"event":event,
+	}
+	return render(request, 'book_event.html', context)
 
 def ticket(request,event_id):
 	event = Event.objects.get(id=event_id)

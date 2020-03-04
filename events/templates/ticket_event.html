@@ -1,82 +1,51 @@
-{% extends "base.html" %}
-{% load static %}
-{% block content %}
+<<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <header class="masthead  text-white ">
+      <div class="masthead-content">
 
+          <div class="card bg-light mb-3 text-dark" >
+            <div class="card-header text-center" >Ticket</div>
+            <div class="card-body">
+              <h5 class="card-title">{{booking.title}}</h5>
+              <p class="card-text">
+                ----------------------------------------------------------<br>
+                Event Ticket Info : <br>
+                Name : {{booking.owner}} <br>
+                Event : {{ event.title }}<br>
+                Date : {{event.date}}<br>
+                Time : {{event.time}}<br>
+                Location : {{event.location}}<br>
+                Number of tickets : {{booker.ticket}}<br>
+                ----------------------------------------------------------<br>
+              </p>
+              <p class="card-text">
+                Dear {{booking.owner}} ,<br>
 
+                  Welcome to {{event.title}}. We can't wait to see you in {{event.location}} In {{event.date}}.<br>
 
-<header class="masthead  text-white ">
-    <div class="masthead-content">
+                  I'm apart of our attendee support team, and I'll be sending you some useful information about {{event.title}} in the one hour. In the meantime you can find more using the following links.<br>
 
+                      1. You can stay with the {{event.name}} network by booking one of our hotels.<br>
+                      2. Learn more about the Location<br>
+                      3. Tell your friends you're attending.<br>
+                      4. Follow us on Facebook and Twitter.<br>
+                      5. Your ticket reference is A1PP-1.<br>
 
-      <a href="mailto:{{ request.user.email }}?subject={{booking.title}}&body=
+                  If you have any questions, you can send us an email and we will answer your question.<br>
 
-      ----------------------------------------------------------%0D%0A
-
-      Event Ticket Info :%0D%0A
-      Name : {{request.user.first_name}} {{request.user.last_name}}%0D%0A
-      Event : {{ booking.title }}%0D%0A
-      Date : {{booking.date}}%0D%0A
-      Time : {{booking.time}}%0D%0A
-      Location : {{booking.location}}%0D%0A
-      Number of tickets : {{booker.ticket}}%0D%0A
-      ----------------------------------------------------------%0D%0A
-      Dear {{request.user.username}} ,%0D%0A
-
-        Welcome to {{booking.title}}. We can't wait to see you in {{booking.location}} In {{booking.date}}.%0D%0A
-
-        I'm apart of our attendee support team, and I'll be sending you some useful information about {{booking.title}} in the one hour. In the meantime you can find more using the following links.%0D%0A
-
-            1. You can stay with the {{booking.name}} network by booking one of our hotels.%0D%0A
-            2. Learn more about the Location%0D%0A
-            3. Tell your friends you're attending.%0D%0A
-            4. Follow us on Facebook and Twitter.%0D%0A
-            5. Your ticket reference is A1PP-1.%0D%0A
-
-        If you have any questions, you can send us an email and we will answer your question.%0D%0A
-
-        Best%0D%0A
-        The organizer team Of {{booking.title}} :{{booking.owner}}%0D%0A
-      " class="btn btn-secondary btn-lg active" >
-        Send Email</a>
-
-        <div class="card bg-light mb-3 text-dark" >
-          <div class="card-header text-center" >Ticket</div>
-          <div class="card-body">
-            <h5 class="card-title">{{booking.title}}</h5>
-            <p class="card-text">
-              ----------------------------------------------------------<br>
-              Event Ticket Info : <br>
-              Name : {{request.user.first_name}} {{request.user.last_name}} <br>
-              Event : {{ booking.title }}<br>
-              Date : {{booking.date}}<br>
-              Time : {{booking.time}}<br>
-              Location : {{booking.location}}<br>
-              Number of tickets : {{booker.ticket}}<br>
-              ----------------------------------------------------------<br>
-            </p>
-            <p class="card-text">
-              Dear {{request.user.username}} ,<br>
-
-                Welcome to {{booking.title}}. We can't wait to see you in {{booking.location}} In {{booking.date}}.<br>
-
-                I'm apart of our attendee support team, and I'll be sending you some useful information about {{booking.title}} in the one hour. In the meantime you can find more using the following links.<br>
-
-                    1. You can stay with the {{booking.name}} network by booking one of our hotels.<br>
-                    2. Learn more about the Location<br>
-                    3. Tell your friends you're attending.<br>
-                    4. Follow us on Facebook and Twitter.<br>
-                    5. Your ticket reference is A1PP-1.<br>
-
-                If you have any questions, you can send us an email and we will answer your question.<br>
-
-                Best<br>
-                The organizer team Of {{booking.title}} :<span style="text-transform:uppercase;"> {{booking.owner}}</span><br>
-            </p>
+                  Best<br>
+                  The organizer team Of {{event.title}} :<span style="text-transform:uppercase;"> {{event.owner}}</span><br>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-      <a class="btn btn-primary mx-1" href="{% url 'dashboard' %}" role="button">Dashboard</a>
 
-</header>
+  </header>
+  <body>
 
-{% endblock %}
+  </body>
+</html>

@@ -6,6 +6,7 @@ from datetime import datetime
 from events.models import Event, Booking
 from .permissions import IsOwner
 
+
 # Create your views here.
 from .serializers import(
 ListSerializer,

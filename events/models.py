@@ -25,3 +25,16 @@ class Booking(models.Model):
 	event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="bookings")
 	owner = models.ForeignKey(User, on_delete = models.CASCADE, related_name="my_booking")
 	ticket = models.PositiveIntegerField()
+
+
+class Profile(models.Model):
+	user = models.OneToOneField(User, on_delete = models.CASCADE)
+	bio = models.TextField(null=True, blank=True)
+	image = models.ImageField(null=True, blank=True)
+
+
+	def create_profile(sender, instance, created, **kwargs):
+		if created:
+			user_profile = Profile.objects.create(user = instance)
+
+			post_save.connect(create_profile, sender = User)

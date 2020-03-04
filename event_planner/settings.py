@@ -31,6 +31,13 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+ALLOWED_HOSTS = []
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'anna.osama1234@gmail.com'
+EMAIL_HOST_PASSWORD = 'anna1234osama'
+EMAIL_PORT = 587
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
